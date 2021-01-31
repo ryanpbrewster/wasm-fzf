@@ -1,0 +1,8 @@
+[package]
+name = "fuzzy-autocomplete"
+version = "0.1.0"
+authors = ["Ryan P. Brewster <RyanPBrewster@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+termion = "1.5"
