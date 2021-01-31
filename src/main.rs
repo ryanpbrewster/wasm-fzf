@@ -1,9 +1,13 @@
-use termion::event::{Key, Event, MouseEvent};
-use termion::input::{TermRead, MouseTerminal};
+use std::{
+    io::{stdin, stdout, Write},
+    time::Instant,
+};
+use termion::event::{Event, Key};
+use termion::input::{MouseTerminal, TermRead};
 use termion::raw::IntoRawMode;
-use std::io::{Write, stdout, stdin};
 
 const WORDS: &str = include_str!("../data/words_alpha.txt");
+const MAX_MATCHES: u16 = 8;
 
 fn main() {
     let stdin = stdin();
@@ -29,16 +33,24 @@ fn main() {
                     _ => {}
                 };
                 write!(stdout, "{}", termion::clear::All).unwrap();
+                let start = Instant::now();
                 let mut i = 0;
                 for line in WORDS.lines() {
                     if line.contains(&query) {
                         write!(stdout, "{}{}", termion::cursor::Goto(1, 2 + i), line).unwrap();
                         i += 1;
-                        if i > 8 {
+                        if i > MAX_MATCHES {
                             break;
                         }
                     }
                 }
+                write!(
+                    stdout,
+                    "{}{}us",
+                    termion::cursor::Goto(1, 3 + i),
+                    start.elapsed().as_micros()
+                )
+                .unwrap();
                 write!(stdout, "{}{}", termion::cursor::Goto(1, 1), query).unwrap();
             }
         }
